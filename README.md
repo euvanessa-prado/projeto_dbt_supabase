@@ -31,9 +31,13 @@ projeto_dbt_supabase/
 │   │       └── pricing/
 │   └── dbt_project.yml
 ├── .llm/
-│   ├── app.py                   # Dashboard Streamlit (3 páginas)
-│   ├── .env                     # Credenciais (não versionado)
-│   └── .env.example             # Template de credenciais
+│   ├── case-01-dashboard/       # Dashboard Streamlit
+│   │   ├── app.py               # App principal (3 páginas)
+│   │   ├── feature.md           # Especificação de features
+│   │   ├── prd.md               # Product Requirements Document
+│   │   ├── .env                 # Credenciais (não versionado)
+│   │   └── .env.example         # Template de credenciais
+│   └── database.md              # Catálogo das tabelas Gold
 ├── requirements.txt             # Dependências Python
 └── CLAUDE.md                    # Guia para o Claude Code
 ```
@@ -82,11 +86,11 @@ dbt run           # Executa todas as transformações
 pip install -r requirements.txt
 
 # Configurar credenciais
-cp .llm\.env.example .llm\.env
-# Editar .llm\.env com a POSTGRES_URL do Supabase
+cp .llm\case-01-dashboard\.env.example .llm\case-01-dashboard\.env
+# Editar .llm\case-01-dashboard\.env com a POSTGRES_URL do Supabase
 
 # Iniciar o dashboard
-python -m streamlit run .llm\app.py
+python -m streamlit run .llm\case-01-dashboard\app.py
 ```
 
 Dashboard disponível em `http://localhost:8501`.

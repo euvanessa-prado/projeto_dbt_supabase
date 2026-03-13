@@ -218,11 +218,11 @@ Mostrar os 4 KPIs em uma linha usando `st.columns(4)`.
 pip install -r requirements.txt
 
 # 3. Configurar credenciais (apenas na primeira vez)
-cp .llm\.env.example .llm\.env
-# Editar .llm\.env com a POSTGRES_URL real do Supabase
+cp .llm\case-01-dashboard\.env.example .llm\case-01-dashboard\.env
+# Editar .llm\case-01-dashboard\.env com a POSTGRES_URL real do Supabase
 
 # 4. Executar o dashboard
-python -m streamlit run .llm\app.py
+python -m streamlit run .llm\case-01-dashboard\app.py
 ```
 
 O dashboard deve abrir em `http://localhost:8501` com dados reais do banco.

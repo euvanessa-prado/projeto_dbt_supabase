@@ -25,9 +25,9 @@ dbt docs generate && dbt docs serve    # Gera e serve documentação
 ```bash
 # Na raiz do projeto, com .venv ativado
 .venv\Scripts\activate
-pip install -r requirements.txt          # Apenas na primeira vez
+pip install -r requirements.txt                              # Apenas na primeira vez
 
-python -m streamlit run .llm\app.py      # Inicia o dashboard
+python -m streamlit run .llm\case-01-dashboard\app.py       # Inicia o dashboard
 ```
 
 Dashboard disponível em `http://localhost:8501`.
@@ -76,7 +76,7 @@ vars:
 
 Localizado em `~/.dbt/profiles.yml`. É a fonte única de credenciais — o dashboard lê desse arquivo via PyYAML para montar a connection string do SQLAlchemy.
 
-### `.llm/.env`
+### `.llm/case-01-dashboard/.env`
 
 ```
 POSTGRES_URL=postgresql://usuario:senha@host:5432/postgres
@@ -86,7 +86,7 @@ Usado pelo dashboard como fallback. Não commitar — protegido pelo `.gitignore
 
 ---
 
-## Dashboard (`llm/app.py`)
+## Dashboard (`.llm/case-01-dashboard/app.py`)
 
 ### Páginas
 

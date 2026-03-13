@@ -46,6 +46,7 @@ ecommerce/logs/
 !.env.example
 *.env
 .llm/.env
+.llm/case-01-dashboard/.env
 
 # Supabase / Local Data
 supabase/.temp/
