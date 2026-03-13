@@ -51,19 +51,83 @@ CORES = [VERDE, VERDE_LIGHT, VERDE_DARK, "#00E5A0", "#00BF72", "#007A47", "#00FF
 
 CORES_SEGMENTO = {
     "VIP":      VERDE,
-    "TOP_TIER": VERDE_DARK,
-    "REGULAR":  CINZA_MED,
+    "Top Tier": VERDE_DARK,
+    "Regular":  CINZA_MED,
 }
 
 CORES_CLASSIFICACAO = {
-    "MAIS_CARO_QUE_TODOS":   "#FF4D4D",
-    "ACIMA_DA_MEDIA":        "#FFA500",
-    "NA_MEDIA":              VERDE_DARK,
-    "ABAIXO_DA_MEDIA":       VERDE,
-    "MAIS_BARATO_QUE_TODOS": VERDE_LIGHT,
+    "Mais Caro que Todos":   "#FF4D4D",
+    "Acima da Média":        "#FFA500",
+    "Na Média":              VERDE_DARK,
+    "Abaixo da Média":       VERDE,
+    "Mais Barato que Todos": VERDE_LIGHT,
 }
 
 ORDEM_SEMANA = ["Segunda", "Terca", "Quarta", "Quinta", "Sexta", "Sabado", "Domingo"]
+
+# ── Labels legíveis (sem underscores) ────────────────────────────────────────
+
+LABEL_SEGMENTO = {
+    "VIP":      "VIP",
+    "TOP_TIER": "Top Tier",
+    "REGULAR":  "Regular",
+}
+
+LABEL_CLASSIFICACAO = {
+    "MAIS_CARO_QUE_TODOS":   "Mais Caro que Todos",
+    "ACIMA_DA_MEDIA":        "Acima da Média",
+    "NA_MEDIA":              "Na Média",
+    "ABAIXO_DA_MEDIA":       "Abaixo da Média",
+    "MAIS_BARATO_QUE_TODOS": "Mais Barato que Todos",
+}
+
+LABEL_COLUNAS = {
+    # clientes
+    "cliente_id":                    "ID Cliente",
+    "nome_cliente":                  "Nome",
+    "estado":                        "Estado",
+    "receita_total":                 "Receita Total (R$)",
+    "total_compras":                 "Nº Compras",
+    "ticket_medio":                  "Ticket Médio (R$)",
+    "primeira_compra":               "Primeira Compra",
+    "ultima_compra":                 "Última Compra",
+    "segmento_cliente":              "Segmento",
+    "ranking_receita":               "Ranking",
+    # pricing
+    "produto_id":                    "ID Produto",
+    "nome_produto":                  "Produto",
+    "categoria":                     "Categoria",
+    "marca":                         "Marca",
+    "nosso_preco":                   "Nosso Preço (R$)",
+    "preco_medio_concorrentes":      "Preço Médio Conc. (R$)",
+    "preco_minimo_concorrentes":     "Preço Mín. Conc. (R$)",
+    "preco_maximo_concorrentes":     "Preço Máx. Conc. (R$)",
+    "total_concorrentes":            "Nº Concorrentes",
+    "diferenca_percentual_vs_media": "Dif. % vs Média",
+    "diferenca_percentual_vs_minimo":"Dif. % vs Mínimo",
+    "classificacao_preco":           "Classificação",
+    "quantidade_total":              "Qtd Vendida",
+    # vendas
+    "data_venda":                    "Data",
+    "ano_venda":                     "Ano",
+    "mes_venda":                     "Mês",
+    "dia_venda":                     "Dia",
+    "dia_semana_nome":               "Dia da Semana",
+    "hora_venda":                    "Hora",
+    "total_vendas":                  "Nº Vendas",
+    "total_clientes_unicos":         "Clientes Únicos",
+}
+
+def aplicar_labels(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.copy()
+    if "segmento_cliente" in df.columns:
+        df["segmento_cliente"] = df["segmento_cliente"].map(LABEL_SEGMENTO).fillna(df["segmento_cliente"])
+    if "classificacao_preco" in df.columns:
+        df["classificacao_preco"] = df["classificacao_preco"].map(LABEL_CLASSIFICACAO).fillna(df["classificacao_preco"])
+    return df
+
+def renomear_colunas(df: pd.DataFrame) -> pd.DataFrame:
+    return df.rename(columns={c: LABEL_COLUNAS.get(c, c) for c in df.columns})
 
 LAYOUT = dict(
     template="plotly_dark",
@@ -147,11 +211,42 @@ def fmt_pct(valor: float) -> str:
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 
-st.sidebar.markdown("## 📊 E-commerce Analytics")
+st.sidebar.markdown(f"""
+<div style='text-align:center; padding: 16px 0 8px 0;'>
+  <span style='font-size:2.2rem;'>📊</span><br/>
+  <span style='font-size:1.3rem; font-weight:700; color:{VERDE}; letter-spacing:1px;'>E-commerce</span><br/>
+  <span style='font-size:1.0rem; font-weight:600; color:{BRANCO}; letter-spacing:2px;'>ANALYTICS</span>
+</div>
+""", unsafe_allow_html=True)
+
+st.sidebar.markdown(f"""
+<div style='background:{PRETO}; border:1px solid {VERDE}22; border-radius:8px; padding:12px 14px; margin-bottom:12px;'>
+  <p style='color:#aaa; font-size:0.78rem; margin:0 0 8px 0; text-transform:uppercase; letter-spacing:1px;'>Sobre o Dashboard</p>
+  <p style='color:{BRANCO}; font-size:0.82rem; margin:0 0 8px 0; line-height:1.6;'>
+    Visão 360° do negócio em três frentes estratégicas:
+  </p>
+  <p style='color:{BRANCO}; font-size:0.80rem; margin:0; line-height:1.8;'>
+    🛒 <strong style='color:{VERDE};'>Vendas</strong> — Receita, volume e sazonalidade por período, categoria e estado<br/>
+    👥 <strong style='color:{VERDE};'>Clientes</strong> — Segmentação, ticket médio, ranking e comportamento de compra<br/>
+    💰 <strong style='color:{VERDE};'>Pricing</strong> — Competitividade de preços, alertas e posicionamento vs concorrentes
+  </p>
+</div>
+""", unsafe_allow_html=True)
+
+st.sidebar.markdown(f"<p style='color:#aaa; font-size:0.78rem; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;'>Navegação</p>", unsafe_allow_html=True)
+pagina = st.sidebar.radio("", ["🛒 Vendas", "👥 Clientes", "💰 Pricing"])
 st.sidebar.markdown("---")
-pagina = st.sidebar.radio("Navegação", ["🛒 Vendas", "👥 Clientes", "💰 Pricing"])
-st.sidebar.markdown("---")
-st.sidebar.markdown(f"<small style='color:#888'>Powered by dbt + Supabase</small>", unsafe_allow_html=True)
+
+st.sidebar.markdown(f"""
+<div style='background:{PRETO}; border:1px solid {VERDE}22; border-radius:8px; padding:10px 14px;'>
+  <p style='color:#aaa; font-size:0.75rem; margin:0 0 6px 0; text-transform:uppercase; letter-spacing:1px;'>Stack Tecnológico</p>
+  <p style='color:{BRANCO}; font-size:0.80rem; margin:0; line-height:1.8;'>
+    ⚡ <strong style='color:{VERDE};'>dbt Core</strong> — Transformações<br/>
+    🐘 <strong style='color:{VERDE};'>Supabase</strong> — PostgreSQL Cloud<br/>
+    🐍 <strong style='color:{VERDE};'>Python</strong> + Streamlit + Plotly
+  </p>
+</div>
+""", unsafe_allow_html=True)
 
 
 # ── Página: Vendas ─────────────────────────────────────────────────────────────
@@ -248,13 +343,13 @@ def pagina_vendas():
 def pagina_clientes():
     st.title("👥 Clientes — Diretora de Customer Success")
 
-    df = get_data("SELECT * FROM public_gold.clientes_segmentacao")
+    df = aplicar_labels(get_data("SELECT * FROM public_gold.clientes_segmentacao"))
 
     # ── Filtros
     with st.expander("🔍 Filtros", expanded=True):
         col_f1, col_f2, col_f3 = st.columns(3)
         estados   = sorted(df["estado"].dropna().unique())
-        segmentos = ["VIP", "TOP_TIER", "REGULAR"]
+        segmentos = ["VIP", "Top Tier", "Regular"]
 
         seg_sel    = col_f1.multiselect("Segmento", segmentos)
         estado_sel = col_f2.multiselect("Estado", estados)
@@ -268,7 +363,7 @@ def pagina_clientes():
     # ── KPIs
     total_clientes  = len(df)
     clientes_vip    = len(df[df["segmento_cliente"] == "VIP"])
-    clientes_top    = len(df[df["segmento_cliente"] == "TOP_TIER"])
+    clientes_top    = len(df[df["segmento_cliente"] == "Top Tier"])
     receita_vip     = df[df["segmento_cliente"] == "VIP"]["receita_total"].sum()
     receita_total   = df["receita_total"].sum()
     pct_vip_receita = (receita_vip / receita_total * 100) if receita_total > 0 else 0
@@ -297,7 +392,7 @@ def pagina_clientes():
     fig1 = px.pie(df_seg, names="segmento_cliente", values="total",
                   title="Distribuição por Segmento", hole=0.45,
                   color="segmento_cliente", color_discrete_map=CORES_SEGMENTO,
-                  category_orders={"segmento_cliente": ["VIP", "TOP_TIER", "REGULAR"]})
+                  category_orders={"segmento_cliente": ["VIP", "Top Tier", "Regular"]})
     fig1.update_traces(textinfo="percent+label", textfont_color=BRANCO)
     fig1.update_layout(**LAYOUT)
     col1.plotly_chart(fig1, use_container_width=True)
@@ -307,7 +402,7 @@ def pagina_clientes():
     fig2 = px.bar(df_rec, x="segmento_cliente", y="receita_total", title="Receita por Segmento",
                   labels={"segmento_cliente": "Segmento", "receita_total": "Receita (R$)"},
                   color="segmento_cliente", color_discrete_map=CORES_SEGMENTO,
-                  category_orders={"segmento_cliente": ["VIP", "TOP_TIER", "REGULAR"]})
+                  category_orders={"segmento_cliente": ["VIP", "Top Tier", "Regular"]})
     fig2.update_layout(**LAYOUT)
     col2.plotly_chart(fig2, use_container_width=True)
 
@@ -348,7 +443,7 @@ def pagina_clientes():
 
     # Tabela Detalhada
     st.subheader("📋 Tabela de Clientes")
-    st.dataframe(df.sort_values("ranking_receita"), use_container_width=True, hide_index=True)
+    st.dataframe(renomear_colunas(df.sort_values("ranking_receita")), use_container_width=True, hide_index=True)
 
 
 # ── Página: Pricing ────────────────────────────────────────────────────────────
@@ -356,7 +451,7 @@ def pagina_clientes():
 def pagina_pricing():
     st.title("💰 Pricing — Diretor de Pricing")
 
-    df = get_data("SELECT * FROM public_gold.precos_competitividade")
+    df = aplicar_labels(get_data("SELECT * FROM public_gold.precos_competitividade"))
 
     # ── Filtros
     with st.expander("🔍 Filtros", expanded=True):
@@ -378,11 +473,11 @@ def pagina_pricing():
 
     # ── KPIs
     total_produtos  = len(df)
-    mais_caros      = len(df[df["classificacao_preco"] == "MAIS_CARO_QUE_TODOS"])
-    mais_baratos    = len(df[df["classificacao_preco"] == "MAIS_BARATO_QUE_TODOS"])
-    acima_media     = len(df[df["classificacao_preco"] == "ACIMA_DA_MEDIA"])
+    mais_caros      = len(df[df["classificacao_preco"] == "Mais Caro que Todos"])
+    mais_baratos    = len(df[df["classificacao_preco"] == "Mais Barato que Todos"])
+    acima_media     = len(df[df["classificacao_preco"] == "Acima da Média"])
     dif_media       = df["diferenca_percentual_vs_media"].mean()
-    receita_risco   = df[df["classificacao_preco"].isin(["MAIS_CARO_QUE_TODOS","ACIMA_DA_MEDIA"])]["receita_total"].sum()
+    receita_risco   = df[df["classificacao_preco"].isin(["Mais Caro que Todos","Acima da Média"])]["receita_total"].sum()
     receita_total   = df["receita_total"].sum()
     pct_risco       = (receita_risco / receita_total * 100) if receita_total > 0 else 0
 
@@ -448,11 +543,11 @@ def pagina_pricing():
 
     # Tabela de Alertas
     st.subheader("🚨 Produtos em Alerta — Mais Caros que Todos os Concorrentes")
-    df_alerta = df[df["classificacao_preco"] == "MAIS_CARO_QUE_TODOS"][
+    df_alerta = df[df["classificacao_preco"] == "Mais Caro que Todos"][
         ["produto_id", "nome_produto", "categoria", "marca", "nosso_preco",
          "preco_maximo_concorrentes", "diferenca_percentual_vs_media", "receita_total"]
     ].sort_values("diferenca_percentual_vs_media", ascending=False)
-    st.dataframe(df_alerta, use_container_width=True, hide_index=True)
+    st.dataframe(renomear_colunas(df_alerta), use_container_width=True, hide_index=True)
 
 
 # ── Roteamento ────────────────────────────────────────────────────────────────
