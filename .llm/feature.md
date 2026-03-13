@@ -141,11 +141,18 @@ Baseado em: `prd.md` (requisitos funcionais) e `database.md` (schemas, colunas e
 ## Como Testar
 
 ```bash
-cd case-01-dashboard
-cp .env.example .env
-# Editar .env com as credenciais reais do Supabase
+# 1. Ativar o ambiente virtual (raiz do projeto)
+.venv\Scripts\activate
+
+# 2. Instalar dependências (apenas na primeira vez)
 pip install -r requirements.txt
-streamlit run app.py
+
+# 3. Configurar credenciais (apenas na primeira vez)
+cp .llm\.env.example .llm\.env
+# Editar .llm\.env com a POSTGRES_URL real do Supabase
+
+# 4. Executar o dashboard
+python -m streamlit run .llm\app.py
 ```
 
 Dashboard disponível em `http://localhost:8501`.
