@@ -2,6 +2,8 @@
 
 Plataforma de inteligência comercial para e-commerce, construída com **dbt Core** + **Supabase (PostgreSQL)**, seguindo a arquitetura **Medalhão (Bronze → Silver → Gold)**. Inclui um dashboard analítico (Streamlit) e um agente de IA via Telegram (Claude + Anthropic SDK).
 
+![Arquitetura da Plataforma](assets/image.png)
+
 ---
 
 ## Stack
