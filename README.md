@@ -1,4 +1,4 @@
-# Projeto de Engenharia de Dados: dbt + Supabase
+# Projeto de Engenharia de Dados: dbt + Supabase + Claud Agent IA + Telegram
 
 Plataforma de inteligência comercial para e-commerce, construída com **dbt Core** + **Supabase (PostgreSQL)**, seguindo a arquitetura **Medalhão (Bronze → Silver → Gold)**. Inclui um dashboard analítico (Streamlit) e um agente de IA via Telegram (Claude + Anthropic SDK).
 
