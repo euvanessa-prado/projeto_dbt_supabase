@@ -35,7 +35,6 @@ env/
 target/
 dbt_packages/
 dbt_modules/
-logs/
 ecommerce/target/
 ecommerce/dbt_packages/
 ecommerce/logs/
@@ -54,6 +53,14 @@ supabase/.temp/
 supabase/.dump/
 *.csv
 *.json
+*.parquet
+*.db
+*.sqlite
+
+# Logs e relatórios gerados
+logs/
+*.log
+relatorio_*.md
 
 # OS generated files
 .DS_Store
@@ -69,8 +76,6 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
-
-logs/
 
 .claude
 .git
