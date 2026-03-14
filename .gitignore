@@ -47,6 +47,7 @@ ecommerce/logs/
 *.env
 .llm/.env
 .llm/case-01-dashboard/.env
+extract_python/.env
 
 # Supabase / Local Data
 supabase/.temp/
@@ -70,3 +71,6 @@ Thumbs.db
 *.swo
 
 logs/
+
+.claude
+.git
