@@ -13,14 +13,18 @@ load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"))
 
 @st.cache_resource
 def _get_engine():
-    profiles_path = os.path.join(os.path.expanduser("~"), ".dbt", "profiles.yml")
-    with open(profiles_path, "r") as f:
-        profiles = yaml.safe_load(f)
-    dev = profiles["ecommerce"]["outputs"]["dev"]
-    url = (
-        f"postgresql+psycopg2://{dev['user']}:{dev['pass']}"
-        f"@{dev['host']}:{dev['port']}/{dev['dbname']}"
-    )
+    # Docker / produção: usa POSTGRES_URL diretamente
+    url = os.environ.get("POSTGRES_URL")
+    if not url:
+        # Desenvolvimento local: lê do profiles.yml do dbt
+        profiles_path = os.path.join(os.path.expanduser("~"), ".dbt", "profiles.yml")
+        with open(profiles_path, "r") as f:
+            profiles = yaml.safe_load(f)
+        dev = profiles["ecommerce"]["outputs"]["dev"]
+        url = (
+            f"postgresql+psycopg2://{dev['user']}:{dev['pass']}"
+            f"@{dev['host']}:{dev['port']}/{dev['dbname']}"
+        )
     return create_engine(url)
 
 @st.cache_data(ttl=300)
@@ -585,8 +589,7 @@ def pagina_vendas():
 
     st.markdown(f"""
 <div style="border-left:3px solid {VERDE}; padding:0 0 0 28px; margin-top:2.5rem; margin-bottom:1rem;">
-  <p style="font-size:0.70rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em;
-            color:{VERDE_DARK}; margin:0 0 6px 0;">Análise — Inteligência de Preços</p>
+  <p style="margin:0"></p>
   <h2 style="font-size:1.4rem; font-weight:700; color:{PRETO}; margin:0 0 18px 0; line-height:1.3;
              font-family:'Merriweather',Georgia,serif;">
     Precificação: onde estamos e o que está em risco
@@ -767,8 +770,7 @@ def pagina_clientes():
 
     st.markdown(f"""
 <div style="border-left:3px solid {VERDE}; padding:0 0 0 28px; margin-top:2.5rem; margin-bottom:1rem;">
-  <p style="font-size:0.70rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em;
-            color:{VERDE_DARK}; margin:0 0 6px 0;">Análise — Base de Clientes</p>
+  <p style="margin:0"></p>
   <h2 style="font-size:1.4rem; font-weight:700; color:{PRETO}; margin:0 0 18px 0; line-height:1.3;
              font-family:'Merriweather',Georgia,serif;">
     Quem são nossos clientes e quanto vale cada segmento
@@ -860,8 +862,7 @@ def pagina_pricing():
 
     st.markdown(f"""
 <div style="border-left:3px solid {VERDE}; padding:0 0 0 28px; margin:2rem 0 2.5rem 0;">
-  <p style="font-size:0.70rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em;
-            color:{VERDE_DARK}; margin:0 0 6px 0;">Análise — Posicionamento Competitivo</p>
+  <p style="margin:0"></p>
   <h2 style="font-size:1.4rem; font-weight:700; color:{PRETO}; margin:0 0 18px 0; line-height:1.3;
              font-family:'Merriweather',Georgia,serif;">
     Como nossos preços se comparam ao mercado

@@ -1,0 +1,10 @@
+services:
+  dashboard:
+    build:
+      context: .llm/case-01-dashboard
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    env_file:
+      - .llm/case-01-dashboard/.env
+    restart: unless-stopped

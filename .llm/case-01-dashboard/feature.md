@@ -10,7 +10,7 @@ Baseado em: `prd.md` (requisitos funcionais) e `database.md` (schemas, colunas e
 | Item | Detalhe |
 |---|---|
 | **App** | `case-01-dashboard/app.py` |
-| **Stack** | Python 3.10+, Streamlit, psycopg2-binary, pandas, plotly, python-dotenv |
+| **Stack** | Python 3.10+, Streamlit, SQLAlchemy, psycopg2-binary, pandas, plotly, python-dotenv, pyyaml |
 | **Banco** | PostgreSQL (Supabase) |
 | **Schemas Gold** | `public_gold_sales`, `public_gold_cs`, `public_gold_pricing` |
 | **Usuários** | Diretor Comercial, Diretora de Customer Success, Diretor de Pricing |
@@ -22,17 +22,18 @@ Baseado em: `prd.md` (requisitos funcionais) e `database.md` (schemas, colunas e
 | Arquivo | Descrição |
 |---|---|
 | `case-01-dashboard/app.py` | App Streamlit completo com as 3 páginas |
-| `case-01-dashboard/requirements.txt` | Dependências Python |
-| `case-01-dashboard/.env.example` | Template das variáveis de ambiente |
+| `case-01-dashboard/requirements.txt` | Dependências Python (inclui `sqlalchemy`, `pyyaml`) |
+| `case-01-dashboard/.env.example` | Template das variáveis de ambiente (`POSTGRES_URL`) |
 
 ---
 
 ## F-01 — Infraestrutura: Conexão e Layout Base
 
 - `st.set_page_config(layout="wide")`
-- Leitura de credenciais via `.env`:
-  - `SUPABASE_HOST`, `SUPABASE_PORT`, `SUPABASE_DB`, `SUPABASE_USER`, `SUPABASE_PASSWORD`
-- Função `get_data(query: str) -> pd.DataFrame` reutilizável via `psycopg2`
+- Conexão via SQLAlchemy engine com estratégia de dois estágios:
+  1. **Docker / produção:** usa `POSTGRES_URL` do `.env` diretamente
+  2. **Dev local (fallback):** lê `~/.dbt/profiles.yml` via PyYAML e monta a connection string do `ecommerce > outputs > dev`
+- Função `get_data(query: str) -> pd.DataFrame` reutilizável via SQLAlchemy
 - Tratamento de erro de conexão com mensagem amigável
 - Sidebar com título "E-commerce Analytics" e navegação entre as 3 páginas via `st.sidebar.radio`:
   - Vendas

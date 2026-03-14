@@ -28,26 +28,27 @@ Supabase (PostgreSQL)
 **Stack:**
 - Python 3.10+
 - Streamlit
-- psycopg2-binary (conexao PostgreSQL)
+- SQLAlchemy (engine de conexao)
+- psycopg2-binary (driver PostgreSQL)
 - pandas
 - plotly (graficos interativos)
 - python-dotenv (variaveis de ambiente)
+- pyyaml (leitura do profiles.yml no dev local)
 
 ---
 
 ## Conexao com o Banco
 
-Usar variaveis de ambiente via `.env`:
+Estrategia de dois estagios via SQLAlchemy engine (`@st.cache_resource`):
 
-```
-SUPABASE_HOST=seu-host.supabase.co
-SUPABASE_PORT=5432
-SUPABASE_DB=postgres
-SUPABASE_USER=seu-usuario
-SUPABASE_PASSWORD=sua-senha
-```
+1. **Docker / producao:** usa `POSTGRES_URL` do `.env` diretamente
+   ```
+   POSTGRES_URL=postgresql://usuario:senha@host:5432/postgres
+   ```
 
-Criar funcao de conexao reutilizavel que leia do `.env` e retorne um `pandas.DataFrame` a partir de uma query SQL.
+2. **Dev local (fallback):** le `~/.dbt/profiles.yml` via PyYAML e monta a connection string a partir de `ecommerce > outputs > dev`
+
+Criar funcao de conexao reutilizavel que retorne um `pandas.DataFrame` a partir de uma query SQL via `engine.connect()`.
 
 ---
 
